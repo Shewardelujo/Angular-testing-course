@@ -1,6 +1,7 @@
 import { UserInterface } from '../types/user.interface';
 import { UsersService } from './users.service';
 import { TestBed } from '@angular/core/testing';
+import { UtilsService } from './utils.service';
 
 //every time we want to test a service or a component, we must create a testing module and test them inside, which is why we are using beforeEach here
 
@@ -9,11 +10,12 @@ import { TestBed } from '@angular/core/testing';
 describe('UsersService', () => {
   //create a property which will be a reference to our UsersService
   let usersService: UsersService;
+
   beforeEach(() => {
     // configureTestingModule creates a testing module (which is like a simple ng module, where you can use things like import, providers etc)
     TestBed.configureTestingModule({
       //we want to register the service in our module
-      providers: [UsersService],
+      providers: [UsersService, UtilsService],
     });
     usersService = TestBed.inject(UsersService);
   });
