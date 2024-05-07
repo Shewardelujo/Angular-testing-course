@@ -1,21 +1,28 @@
 import { UserInterface } from '../types/user.interface';
 import { UsersService } from './users.service';
 import { TestBed } from '@angular/core/testing';
+import { UtilsService } from './utils.service';
 
 //every time we want to test a service or a component, we must create a testing module and test them inside, which is why we are using beforeEach here
 
 //beforeEach is a block that will be executed before every single test in this file... If we need stuff in every single test, it makes sense to put it in beforeEach
 
+//with mock, we are using something else for our values
+//with spy, we are able to spy on the service and get the real values
+
 describe('UsersService', () => {
   //create a property which will be a reference to our UsersService
   let usersService: UsersService;
+  let utilsService: UtilsService;
+
   beforeEach(() => {
     // configureTestingModule creates a testing module (which is like a simple ng module, where you can use things like import, providers etc)
     TestBed.configureTestingModule({
       //we want to register the service in our module
-      providers: [UsersService],
+      providers: [UsersService, UtilsService],
     });
     usersService = TestBed.inject(UsersService);
+    utilsService = TestBed.inject(UtilsService);
   });
 
   it('creates a service', () => {
@@ -48,6 +55,23 @@ describe('UsersService', () => {
       ];
       usersService.removeUser('3');
       expect(usersService.users).toEqual([]);
+    });
+  });
+
+  describe('getUsernames', () => {
+    it('should get usernames', () => {
+      jest.spyOn(utilsService, 'pluck'); //so utilService is the real one and we are spying on the pluck function
+      usersService.users = [
+        {
+          id: '3',
+          name: 'foo',
+        },
+      ];
+      usersService.getUsernames();
+      expect(utilsService.pluck).toHaveBeenCalledWith(
+        usersService.users,
+        'name'
+      );
     });
   });
 });
